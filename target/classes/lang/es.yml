@@ -1,0 +1,33 @@
+messages:
+  prefix: "&7[&cBloodSystem&7]"
+  blood:
+    info: "&fGrupo sanguíneo: &c%bloodtype% %rhfactor%"
+    volume: "&fVolumen de sangre: &c%volume%&f ml"
+    quality: "&fCalidad de sangre: &c%quality%&f%"
+    set:
+      type: "&aGrupo sanguíneo de %player% cambiado a &c%bloodtype% %rhfactor%"
+      volume: "&aVolumen de sangre de %player% cambiado a &c%volume% ml"
+      quality: "&aCalidad de sangre de %player% cambiada a &c%quality%&a%"
+  help:
+    title: "&fComandos disponibles:"
+    commands:
+      blood: "&f/blood &7- Mostrar tu información sanguínea"
+      info: "&f/blood info [jugador] &7- Mostrar información sanguínea del jugador"
+      help: "&f/blood help &7- Mostrar este mensaje"
+      admin:
+        title: "&cComandos de administrador:"
+        set_type: "&f/blood set type <jugador> <A|B|AB|O> [+|-] &7- Establecer grupo sanguíneo"
+        set_volume: "&f/blood set volume <jugador> <valor> &7- Establecer volumen de sangre"
+        set_quality: "&f/blood set quality <jugador> <valor> &7- Establecer calidad de sangre"
+        reload: "&f/blood reload &7- Recargar el plugin"
+  reload:
+    success: "&a¡Plugin recargado exitosamente!"
+  errors:
+    no-permission: "&c¡No tienes permiso para usar este comando!"
+    player-not-found: "&c¡Jugador no encontrado!"
+    invalid-command: "&c¡Comando inválido! Usa /blood help"
+    player-only: "&c¡Este comando es solo para jugadores!"
+    no-data: "&c¡Datos sanguíneos no encontrados!"
+    invalid_type: "&c¡Grupo sanguíneo inválido! Usa A, B, AB o O"
+    invalid_value: "&c¡Valor inválido! Usa un número"
+    invalid_rh: "&c¡Factor RH inválido! Usa + o -"

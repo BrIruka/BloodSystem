@@ -1,0 +1,27 @@
+name: BloodSystem
+version: '1.0.0'
+main: com.owlstudio.bloodSystem.BloodSystem
+api-version: '1.18'
+description: Система крови для игроков
+authors: [OwlStudio]
+depend: [PlaceholderAPI]
+
+commands:
+  blood:
+    description: Команды для управления кровью
+    usage: /<command> [info|set|help|reload]
+    permission: bloodsystem.use
+
+permissions:
+  bloodsystem.use:
+    description: Разрешает использовать базовые команды плагина
+    default: true
+  bloodsystem.info.others:
+    description: Разрешает просматривать информацию о крови других игроков
+    default: op
+  bloodsystem.admin:
+    description: Разрешает использовать административные команды
+    default: op
+  bloodsystem.reload:
+    description: Разрешает перезагружать плагин
+    default: op

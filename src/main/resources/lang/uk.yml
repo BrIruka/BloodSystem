@@ -1,0 +1,33 @@
+messages:
+  prefix: "&7[&cBloodSystem&7]"
+  blood:
+    info: "&fГрупа крові: &c%bloodtype% %rhfactor%"
+    volume: "&fОб'єм крові: &c%volume%&f мл"
+    quality: "&fЯкість крові: &c%quality%&f%"
+    set:
+      type: "&aГрупа крові гравця %player% змінена на &c%bloodtype% %rhfactor%"
+      volume: "&aОб'єм крові гравця %player% змінений на &c%volume% мл"
+      quality: "&aЯкість крові гравця %player% змінена на &c%quality%&a%"
+  help:
+    title: "&fДоступні команди:"
+    commands:
+      blood: "&f/blood &7- Показати інформацію про свою кров"
+      info: "&f/blood info [гравець] &7- Показати інформацію про кров гравця"
+      help: "&f/blood help &7- Показати це повідомлення"
+      admin:
+        title: "&cАдміністраторські команди:"
+        set_type: "&f/blood set type <гравець> <A|B|AB|O> [+|-] &7- Встановити групу крові"
+        set_volume: "&f/blood set volume <гравець> <значення> &7- Встановити об'єм крові"
+        set_quality: "&f/blood set quality <гравець> <значення> &7- Встановити якість крові"
+        reload: "&f/blood reload &7- Перезавантажити плагін"
+  reload:
+    success: "&aПлагін успішно перезавантажено!"
+  errors:
+    no-permission: "&cУ вас немає прав для використання цієї команди!"
+    player-not-found: "&cГравця не знайдено!"
+    invalid-command: "&cНевірна команда! Використовуйте /blood help"
+    player-only: "&cЦя команда доступна тільки для гравців!"
+    no-data: "&cДані про кров не знайдено!"
+    invalid_type: "&cНевірна група крові! Використовуйте A, B, AB або O"
+    invalid_value: "&cНевірне значення! Використовуйте число"
+    invalid_rh: "&cНевірний резус-фактор! Використовуйте + або -"

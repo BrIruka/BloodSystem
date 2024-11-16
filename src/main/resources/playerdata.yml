@@ -1,0 +1,8 @@
+# Данные игроков BloodSystem
+players:
+# Данные будут сохраняться в формате:
+# UUID-игрока:
+#   bloodType: A/B/AB/O
+#   rhFactor: true/false
+#   quality: 100.0
+#   volume: 5000.0

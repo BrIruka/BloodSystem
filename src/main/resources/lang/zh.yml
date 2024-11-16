@@ -1,0 +1,33 @@
+messages:
+  prefix: "&7[&c血液系统&7]"
+  blood:
+    info: "&f血型：&c%bloodtype% %rhfactor%"
+    volume: "&f血容量：&c%volume%&f 毫升"
+    quality: "&f血液质量：&c%quality%&f%"
+    set:
+      type: "&a已将玩家 %player% 的血型更改为 &c%bloodtype% %rhfactor%"
+      volume: "&a已将玩家 %player% 的血容量更改为 &c%volume% 毫升"
+      quality: "&a已将玩家 %player% 的血液质量更改为 &c%quality%&a%"
+  help:
+    title: "&f可用命令："
+    commands:
+      blood: "&f/blood &7- 显示自己的血液信息"
+      info: "&f/blood info [玩家] &7- 显示玩家的血液信息"
+      help: "&f/blood help &7- 显示此消息"
+      admin:
+        title: "&c管理员命令："
+        set_type: "&f/blood set type <玩家> <A|B|AB|O> [+|-] &7- 设置血型"
+        set_volume: "&f/blood set volume <玩家> <数值> &7- 设置血容量"
+        set_quality: "&f/blood set quality <玩家> <数值> &7- 设置血液质量"
+        reload: "&f/blood reload &7- 重新加载插件"
+  reload:
+    success: "&a插件重新加载成功！"
+  errors:
+    no-permission: "&c你没有使用此命令的权限！"
+    player-not-found: "&c未找到玩家！"
+    invalid-command: "&c无效命令！请使用 /blood help"
+    player-only: "&c此命令仅供玩家使用！"
+    no-data: "&c未找到血液数据！"
+    invalid_type: "&c无效血型！请使用 A、B、AB 或 O"
+    invalid_value: "&c无效数值！请使用数字"
+    invalid_rh: "&c无效 RH 因子！请使用 + 或 -"

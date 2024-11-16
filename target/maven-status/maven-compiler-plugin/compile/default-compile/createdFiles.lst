@@ -1,0 +1,7 @@
+com\owlstudio\bloodSystem\BloodSystem.class
+com\owlstudio\bloodSystem\commands\BloodCommand.class
+com\owlstudio\bloodSystem\blood\PlayerBloodData.class
+com\owlstudio\bloodSystem\placeholders\BloodPlaceholders.class
+com\owlstudio\bloodSystem\blood\PlayerBloodData$BloodType.class
+com\owlstudio\bloodSystem\commands\BloodTabCompleter.class
+com\owlstudio\bloodSystem\data\DataManager.class

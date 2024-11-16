@@ -1,0 +1,69 @@
+# ======================================
+#          BloodSystem v${project.version}
+# ======================================
+#
+# Author: OwlStudio
+settings:
+  # Доступные языки (Available languages):
+  # - ru (Русский)
+  # - en (English)
+  # - uk (Українська)
+  # - pl (Polski)
+  # - zh (中文)
+  # - fr (Français)
+  # - es (Español)
+  language: "en"
+  # Настройки крови
+  blood:
+    # Минимальный объем крови (мл) | Minimum blood volume (ml)
+    min-volume: 0
+    # Максимальный объем крови (мл) | Maximum blood volume (ml)
+    max-volume: 5000
+    # Скорость восстановления крови (мл в секунду) | Blood regeneration rate (ml per second)
+    # For example:
+    # 60 = 1 ml
+    # 300 = 5 ml
+    # 600 = 10 ml
+    regeneration-rate: 600
+    # Потеря крови при уроне (мл за единицу урона) | Blood loss per damage (ml per damage point)
+    blood-loss-per-damage: 100
+
+
+# ======================================
+#         PlaceholderAPI
+# ======================================
+# Available placeholders:
+# %blood_type%        - Full blood type (example: "A+")
+# %blood_type_raw%    - Blood type only (example: "A")
+# %blood_rh%          - RH factor only ("+" or "-")
+# %blood_volume%      - Blood volume with formatting (example: "4,500.0")
+# %blood_volume_raw%  - Blood volume without formatting (example: "4500")
+# %blood_quality%     - Blood quality with formatting (example: "95.5%")
+# %blood_quality_raw% - Blood quality without formatting (example: "95.5")
+
+# Доступные плейсхолдеры:
+# %blood_type%        - Полная группа крови (например: "A+")
+# %blood_type_raw%    - Только группа крови (например: "A")
+# %blood_rh%          - Только резус-фактор ("+" или "-")
+# %blood_volume%      - Объём крови с форматированием (например: "4,500.0")
+# %blood_volume_raw%  - Объём крови без форматирования (например: "4500")
+# %blood_quality%     - Качество крови с форматированием (например: "95.5%")
+# %blood_quality_raw% - Качество крови без форматирования (например: "95.5")
+
+# ======================================
+#           Permissions
+# ======================================
+# bloodsystem.use         - Basic plugin commands | Базовые команды плагина
+# bloodsystem.info.others - View other players info | Просмотр информации других игроков
+# bloodsystem.admin       - Administrative commands | Административные команды
+# bloodsystem.reload      - Reload plugin | Перезагрузка плагина
+
+# ======================================
+#            Commands
+# ======================================
+# /blood                - Show your blood info | Показать информацию о своей крови
+# /blood info [player]  - Show player's blood info | Показать информацию о крови игрока
+# /blood help          - Show help message | Показать справку
+# /blood set type <player> <A|B|AB|O> [+|-] - Set blood type | Установить группу крови
+# /blood set volume <player> <value> - Set blood volume | Установить объём крови
+# /blood set quality <player> <value> - Set blood quality | Установить качество крови

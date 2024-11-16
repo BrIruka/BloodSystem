@@ -1,0 +1,33 @@
+messages:
+  prefix: "&7[&cBloodSystem&7]"
+  blood:
+    info: "&fBlood Type: &c%bloodtype% %rhfactor%"
+    volume: "&fBlood Volume: &c%volume%&f ml"
+    quality: "&fBlood Quality: &c%quality%&f%"
+    set:
+      type: "&aPlayer %player%'s blood type changed to &c%bloodtype% %rhfactor%"
+      volume: "&aPlayer %player%'s blood volume changed to &c%volume% ml"
+      quality: "&aPlayer %player%'s blood quality changed to &c%quality%&a%"
+  help:
+    title: "&fAvailable Commands:"
+    commands:
+      blood: "&f/blood &7- Show your blood information"
+      info: "&f/blood info [player] &7- Show player's blood information"
+      help: "&f/blood help &7- Show this message"
+      admin:
+        title: "&cAdmin Commands:"
+        set_type: "&f/blood set type <player> <A|B|AB|O> [+|-] &7- Set blood type"
+        set_volume: "&f/blood set volume <player> <value> &7- Set blood volume"
+        set_quality: "&f/blood set quality <player> <value> &7- Set blood quality"
+        reload: "&f/blood reload &7- Reload the plugin"
+  reload:
+    success: "&aPlugin successfully reloaded!"
+  errors:
+    no-permission: "&cYou don't have permission to use this command!"
+    player-not-found: "&cPlayer not found!"
+    invalid-command: "&cInvalid command! Use /blood help"
+    player-only: "&cThis command is only for players!"
+    no-data: "&cBlood data not found!"
+    invalid_type: "&cInvalid blood type! Use A, B, AB or O"
+    invalid_value: "&cInvalid value! Use a number"
+    invalid_rh: "&cInvalid RH factor! Use + or -"
