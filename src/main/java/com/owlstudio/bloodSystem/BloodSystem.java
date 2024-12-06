@@ -63,7 +63,7 @@ public final class BloodSystem extends JavaPlugin implements Listener {
         console.sendMessage("");
         console.sendMessage("§8[§cBloodSystem§8] §7==========================================");
         console.sendMessage("§8[§cBloodSystem§8] §fVersion: §c" + getDescription().getVersion());
-        console.sendMessage("§8[§cBloodSystem§8] §fAuthor: §6OwlStudio");
+        console.sendMessage("§8[§cBloodSystem§8] §fAuthor: §6IrukaMine");
         console.sendMessage("§8[§cBloodSystem§8] §7==========================================");
         console.sendMessage("");
     }
