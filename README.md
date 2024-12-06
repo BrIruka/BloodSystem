@@ -3,7 +3,7 @@
 </p>
 <p align="center">
  ║              BloodSystem                 ║
- ║            Создано: OwlStudio                  ║
+ ║            Создано: IrukaMine                  ║
 </p>
 
 <p align="center">
