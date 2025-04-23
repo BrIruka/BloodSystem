@@ -1,7 +1,7 @@
-com\owlstudio\bloodSystem\BloodSystem.class
-com\owlstudio\bloodSystem\commands\BloodCommand.class
-com\owlstudio\bloodSystem\blood\PlayerBloodData.class
-com\owlstudio\bloodSystem\placeholders\BloodPlaceholders.class
-com\owlstudio\bloodSystem\blood\PlayerBloodData$BloodType.class
-com\owlstudio\bloodSystem\commands\BloodTabCompleter.class
-com\owlstudio\bloodSystem\data\DataManager.class
+com\irukamine\bloodSystem\placeholders\BloodPlaceholders.class
+com\irukamine\bloodSystem\blood\PlayerBloodData.class
+com\irukamine\bloodSystem\data\DataManager.class
+com\irukamine\bloodSystem\blood\PlayerBloodData$BloodType.class
+com\irukamine\bloodSystem\BloodSystem.class
+com\irukamine\bloodSystem\commands\BloodTabCompleter.class
+com\irukamine\bloodSystem\commands\BloodCommand.class

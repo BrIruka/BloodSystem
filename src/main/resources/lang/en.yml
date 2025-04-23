@@ -8,6 +8,11 @@ messages:
       type: "&aPlayer %player%'s blood type changed to &c%bloodtype% %rhfactor%"
       volume: "&aPlayer %player%'s blood volume changed to &c%volume% ml"
       quality: "&aPlayer %player%'s blood quality changed to &c%quality%&a%"
+      maxvolume: "&aPlayer %player%'s maximum blood volume set to &c%maxvolume% ml"
+    add:
+      maxvolume: "&aPlayer %player%'s maximum blood volume increased by &c%amount% ml &7(Now: &c%maxvolume% ml&7)"
+    remove:
+      maxvolume: "&aPlayer %player%'s maximum blood volume decreased by &c%amount% ml &7(Was: &c%oldmaxvolume% ml&7, Now: &c%maxvolume% ml&7)"
   help:
     title: "&fAvailable Commands:"
     commands:
@@ -19,7 +24,13 @@ messages:
         set_type: "&f/blood set type <player> <A|B|AB|O> [+|-] &7- Set blood type"
         set_volume: "&f/blood set volume <player> <value> &7- Set blood volume"
         set_quality: "&f/blood set quality <player> <value> &7- Set blood quality"
+        set_maxvolume: "&f/blood set maxvolume <player> <value> &7- Set maximum blood volume"
+        add_maxvolume: "&f/blood add volume <player> <value> &7- Increase maximum blood volume"
+        remove_maxvolume: "&f/blood remove volume <player> <value> &7- Decrease maximum blood volume"
         reload: "&f/blood reload &7- Reload the plugin"
+  blood_limits:
+    min_required: "&cCannot set blood volume below %minvolume% ml (required for 1 heart)"
+    max_remove: "&cMaximum amount you can remove: %maxamount% ml"
   reload:
     success: "&aPlugin successfully reloaded!"
   errors:

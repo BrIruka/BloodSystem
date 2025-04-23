@@ -8,6 +8,11 @@ messages:
       type: "&a已将玩家 %player% 的血型更改为 &c%bloodtype% %rhfactor%"
       volume: "&a已将玩家 %player% 的血容量更改为 &c%volume% 毫升"
       quality: "&a已将玩家 %player% 的血液质量更改为 &c%quality%&a%"
+      maxvolume: "&a已将玩家 %player% 的最大血容量设置为 &c%maxvolume% 毫升"
+    add:
+      maxvolume: "&a已将玩家 %player% 的最大血容量增加 &c%amount% 毫升 &7(现在：&c%maxvolume% 毫升&7)"
+    remove:
+      maxvolume: "&a已将玩家 %player% 的最大血容量减少 &c%amount% 毫升 &7(原先：&c%oldmaxvolume% 毫升&7，现在：&c%maxvolume% 毫升&7)"
   help:
     title: "&f可用命令："
     commands:
@@ -19,7 +24,13 @@ messages:
         set_type: "&f/blood set type <玩家> <A|B|AB|O> [+|-] &7- 设置血型"
         set_volume: "&f/blood set volume <玩家> <数值> &7- 设置血容量"
         set_quality: "&f/blood set quality <玩家> <数值> &7- 设置血液质量"
+        set_maxvolume: "&f/blood set maxvolume <玩家> <数值> &7- 设置最大血容量"
+        add_maxvolume: "&f/blood add volume <玩家> <数值> &7- 增加最大血容量"
+        remove_maxvolume: "&f/blood remove volume <玩家> <数值> &7- 减少最大血容量"
         reload: "&f/blood reload &7- 重新加载插件"
+  blood_limits:
+    min_required: "&c血容量不能低于 %minvolume% 毫升（1颗心所需）"
+    max_remove: "&c最多可以移除：%maxamount% 毫升"
   reload:
     success: "&a插件重新加载成功！"
   errors:

@@ -1,9 +1,9 @@
 name: BloodSystem
 version: '${project.version}'
-main: com.owlstudio.bloodSystem.BloodSystem
+main: com.irukamine.bloodSystem.BloodSystem
 api-version: '1.18'
 description: Система крови для игроков
-authors: [OwlStudio]
+authors: [IrukaMine]
 depend: [PlaceholderAPI]
 
 commands:

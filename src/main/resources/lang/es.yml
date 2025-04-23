@@ -8,6 +8,11 @@ messages:
       type: "&aGrupo sanguíneo de %player% cambiado a &c%bloodtype% %rhfactor%"
       volume: "&aVolumen de sangre de %player% cambiado a &c%volume% ml"
       quality: "&aCalidad de sangre de %player% cambiada a &c%quality%&a%"
+      maxvolume: "&aVolumen máximo de sangre de %player% establecido a &c%maxvolume% ml"
+    add:
+      maxvolume: "&aVolumen máximo de sangre de %player% aumentado en &c%amount% ml &7(Ahora: &c%maxvolume% ml&7)"
+    remove:
+      maxvolume: "&aVolumen máximo de sangre de %player% disminuido en &c%amount% ml &7(Era: &c%oldmaxvolume% ml&7, Ahora: &c%maxvolume% ml&7)"
   help:
     title: "&fComandos disponibles:"
     commands:
@@ -19,7 +24,13 @@ messages:
         set_type: "&f/blood set type <jugador> <A|B|AB|O> [+|-] &7- Establecer grupo sanguíneo"
         set_volume: "&f/blood set volume <jugador> <valor> &7- Establecer volumen de sangre"
         set_quality: "&f/blood set quality <jugador> <valor> &7- Establecer calidad de sangre"
+        set_maxvolume: "&f/blood set maxvolume <jugador> <valor> &7- Establecer volumen máximo de sangre"
+        add_maxvolume: "&f/blood add volume <jugador> <valor> &7- Aumentar volumen máximo de sangre"
+        remove_maxvolume: "&f/blood remove volume <jugador> <valor> &7- Disminuir volumen máximo de sangre"
         reload: "&f/blood reload &7- Recargar el plugin"
+  blood_limits:
+    min_required: "&cNo se puede establecer el volumen de sangre por debajo de %minvolume% ml (requerido para 1 corazón)"
+    max_remove: "&cCantidad máxima que puedes quitar: %maxamount% ml"
   reload:
     success: "&a¡Plugin recargado exitosamente!"
   errors:
