@@ -56,27 +56,22 @@ public class DataManager {
     public PlayerBloodData loadPlayerData(UUID playerUUID) {
         String path = "players." + playerUUID.toString() + ".";
 
-        // Если данных нет, возвращаем null
         if (!hasPlayerData(playerUUID)) {
             return null;
         }
 
         PlayerBloodData bloodData = new PlayerBloodData(playerUUID, false, plugin);
 
-        // Загружаем существующие данные
         bloodData.setBloodType(dataConfig.getString(path + "bloodType"));
         bloodData.setRhFactor(dataConfig.getBoolean(path + "rhFactor"));
         bloodData.setQuality(dataConfig.getDouble(path + "quality"));
         
-        // Загружаем maxVolume, если он есть (для обратной совместимости)
         if (dataConfig.contains(path + "maxVolume")) {
             bloodData.setMaxVolume(dataConfig.getDouble(path + "maxVolume"));
         } else {
-            // Если maxVolume нет в данных, используем значение из конфига
             bloodData.setMaxVolume(plugin.getConfig().getDouble("settings.blood.max-volume", 5000.0));
         }
         
-        // Устанавливаем volume после maxVolume, чтобы проверки в setVolume работали правильно
         bloodData.setVolume(dataConfig.getDouble(path + "volume"));
 
         return bloodData;

@@ -57,7 +57,6 @@ public class PlayerBloodData {
         this.bloodType = BloodType.random();
         this.rhFactor = new Random().nextBoolean();
         this.quality = 100.0;
-        // Устанавливаем начальный объем и макс. объем равным максимальному из конфига
         double configMaxVolume = plugin.getConfig().getDouble("settings.blood.max-volume", 5000.0);
         this.volume = configMaxVolume;
         this.maxVolume = configMaxVolume;
@@ -88,16 +87,13 @@ public class PlayerBloodData {
         return volume;
     }
 
-    // Новый геттер для максимального объема
     public double getMaxVolume() {
         return maxVolume;
     }
 
-    // Новый сеттер для максимального объема
     public void setMaxVolume(double maxVolume) {
         double minVolume = plugin.getConfig().getDouble("settings.blood.min-volume", 0.0);
         
-        // Минимальный объем крови должен быть достаточным для 1 сердца (500 мл)
         double minRequiredVolume = BloodType.BLOOD_PER_HEART;
         minVolume = Math.max(minVolume, minRequiredVolume);
         
@@ -123,29 +119,37 @@ public class PlayerBloodData {
 
     // Метод для обновления здоровья игрока на основе объема крови
     public void updatePlayerHealth(Player player) {
-        // Получаем количество сердец из объема крови
-        double hearts = volume / BloodType.BLOOD_PER_HEART;
-        // Конвертируем сердца в HP (1 сердце = 2 HP)
-        double health = hearts * 2;
+        if (player == null || !player.isOnline() || player.isDead()) {
+            return;
+        }
 
-        // Устанавливаем максимальное здоровье игрока на основе объема крови
-        // Минимум 1 сердце (2 HP), иначе возникнет ошибка
-        double maxHealth = Math.min(Math.max(health, 2.0), 20.0);
-        player.setMaxHealth(maxHealth);
-
-        // Устанавливаем текущее здоровье равным максимальному
-        // Это предотвратит восстановление от сытости выше лимита крови
-        player.setHealth(maxHealth);
+        try {
+            double hearts = volume / BloodType.BLOOD_PER_HEART;
+            
+            double maxHealth = hearts * 2;
+            
+            maxHealth = Math.max(maxHealth, 2.0);
+            
+            player.getAttribute(org.bukkit.attribute.Attribute.GENERIC_MAX_HEALTH).setBaseValue(maxHealth);
+            
+            double currentHealthPercent = player.getHealth() / player.getMaxHealth();
+            
+            if (currentHealthPercent < 0.1 || player.getHealth() <= 0) {
+                player.setHealth(maxHealth);
+            } else {
+                double newHealth = maxHealth * currentHealthPercent;
+                player.setHealth(Math.min(maxHealth, newHealth));
+            }
+        } catch (Exception e) {
+        }
     }
 
     public void setVolume(double volume) {
-        // Используем минимум из конфига и максимум из персональных данных
         double minVolume = plugin.getConfig().getDouble("settings.blood.min-volume", 0.0);
         this.volume = Math.max(minVolume, Math.min(maxVolume, volume));
     }
 
     public void addVolume(double amount) {
-        // Используем персональный максимальный объем
         double newVolume = Math.min(this.volume + amount, maxVolume);
         setVolume(newVolume);
     }
@@ -163,7 +167,6 @@ public class PlayerBloodData {
     public void removeMaxVolume(double amount) {
         double minVolume = plugin.getConfig().getDouble("settings.blood.min-volume", 0.0);
         
-        // Минимальный объем крови должен быть достаточным для 1 сердца (500 мл)
         double minRequiredVolume = BloodType.BLOOD_PER_HEART;
         minVolume = Math.max(minVolume, minRequiredVolume);
         

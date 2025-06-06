@@ -10,8 +10,10 @@ messages:
       quality: "&aCalidad de sangre de %player% cambiada a &c%quality%&a%"
       maxvolume: "&aVolumen máximo de sangre de %player% establecido a &c%maxvolume% ml"
     add:
+      volume: "&aVolumen de sangre de %player% aumentado en &c%amount% ml &7(Era: &c%oldvolume% ml&7, Ahora: &c%volume% ml&7)"
       maxvolume: "&aVolumen máximo de sangre de %player% aumentado en &c%amount% ml &7(Ahora: &c%maxvolume% ml&7)"
     remove:
+      volume: "&aVolumen de sangre de %player% disminuido en &c%amount% ml &7(Era: &c%oldvolume% ml&7, Ahora: &c%volume% ml&7)"
       maxvolume: "&aVolumen máximo de sangre de %player% disminuido en &c%amount% ml &7(Era: &c%oldmaxvolume% ml&7, Ahora: &c%maxvolume% ml&7)"
   help:
     title: "&fComandos disponibles:"
@@ -25,8 +27,10 @@ messages:
         set_volume: "&f/blood set volume <jugador> <valor> &7- Establecer volumen de sangre"
         set_quality: "&f/blood set quality <jugador> <valor> &7- Establecer calidad de sangre"
         set_maxvolume: "&f/blood set maxvolume <jugador> <valor> &7- Establecer volumen máximo de sangre"
-        add_maxvolume: "&f/blood add volume <jugador> <valor> &7- Aumentar volumen máximo de sangre"
-        remove_maxvolume: "&f/blood remove volume <jugador> <valor> &7- Disminuir volumen máximo de sangre"
+        add_volume: "&f/blood add volume <jugador> <valor> &7- Añadir volumen de sangre"
+        add_maxvolume: "&f/blood add maxvolume <jugador> <valor> &7- Aumentar volumen máximo de sangre"
+        remove_volume: "&f/blood remove volume <jugador> <valor> &7- Quitar volumen de sangre"
+        remove_maxvolume: "&f/blood remove maxvolume <jugador> <valor> &7- Disminuir volumen máximo de sangre"
         reload: "&f/blood reload &7- Recargar el plugin"
   blood_limits:
     min_required: "&cNo se puede establecer el volumen de sangre por debajo de %minvolume% ml (requerido para 1 corazón)"

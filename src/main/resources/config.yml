@@ -27,6 +27,8 @@ settings:
     regeneration-rate: 600
     # Потеря крови при уроне (мл за единицу урона) | Blood loss per damage (ml per damage point)
     blood-loss-per-damage: 100
+    # Объем крови при респавне (мл) | Blood volume on respawn (ml)
+    death-blood-loss: 500
 
 
 # ======================================

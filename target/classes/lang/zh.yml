@@ -10,8 +10,10 @@ messages:
       quality: "&a已将玩家 %player% 的血液质量更改为 &c%quality%&a%"
       maxvolume: "&a已将玩家 %player% 的最大血容量设置为 &c%maxvolume% 毫升"
     add:
+      volume: "&a已将玩家 %player% 的血容量增加 &c%amount% 毫升 &7(原先：&c%oldvolume% 毫升&7，现在：&c%volume% 毫升&7)"
       maxvolume: "&a已将玩家 %player% 的最大血容量增加 &c%amount% 毫升 &7(现在：&c%maxvolume% 毫升&7)"
     remove:
+      volume: "&a已将玩家 %player% 的血容量减少 &c%amount% 毫升 &7(原先：&c%oldvolume% 毫升&7，现在：&c%volume% 毫升&7)"
       maxvolume: "&a已将玩家 %player% 的最大血容量减少 &c%amount% 毫升 &7(原先：&c%oldmaxvolume% 毫升&7，现在：&c%maxvolume% 毫升&7)"
   help:
     title: "&f可用命令："
@@ -25,8 +27,10 @@ messages:
         set_volume: "&f/blood set volume <玩家> <数值> &7- 设置血容量"
         set_quality: "&f/blood set quality <玩家> <数值> &7- 设置血液质量"
         set_maxvolume: "&f/blood set maxvolume <玩家> <数值> &7- 设置最大血容量"
-        add_maxvolume: "&f/blood add volume <玩家> <数值> &7- 增加最大血容量"
-        remove_maxvolume: "&f/blood remove volume <玩家> <数值> &7- 减少最大血容量"
+        add_volume: "&f/blood add volume <玩家> <数值> &7- 增加血容量"
+        add_maxvolume: "&f/blood add maxvolume <玩家> <数值> &7- 增加最大血容量"
+        remove_volume: "&f/blood remove volume <玩家> <数值> &7- 减少血容量"
+        remove_maxvolume: "&f/blood remove maxvolume <玩家> <数值> &7- 减少最大血容量"
         reload: "&f/blood reload &7- 重新加载插件"
   blood_limits:
     min_required: "&c血容量不能低于 %minvolume% 毫升（1颗心所需）"

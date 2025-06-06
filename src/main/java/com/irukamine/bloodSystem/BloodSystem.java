@@ -8,6 +8,7 @@ import com.irukamine.bloodSystem.placeholders.BloodPlaceholders;
 import org.bukkit.Bukkit;
 import org.bukkit.event.entity.EntityDamageEvent;
 import org.bukkit.event.entity.EntityRegainHealthEvent;
+import org.bukkit.event.EventPriority;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.configuration.file.YamlConfiguration;
@@ -16,6 +17,8 @@ import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.event.player.PlayerQuitEvent;
+import org.bukkit.event.player.PlayerRespawnEvent;
+import org.bukkit.event.entity.PlayerDeathEvent;
 import org.bukkit.command.ConsoleCommandSender;
 
 import java.io.File;
@@ -27,7 +30,8 @@ public final class BloodSystem extends JavaPlugin implements Listener {
     private FileConfiguration langConfig;
     private final Map<UUID, PlayerBloodData> playerBloodMap = new HashMap<>();
     private DataManager dataManager;
-    private int regenerationTask;
+    private int regenerationTask = 0;
+    private int healthRegenerationTask = 0;
 
     @Override
     public void onEnable() {
@@ -46,8 +50,9 @@ public final class BloodSystem extends JavaPlugin implements Listener {
         getCommand("blood").setExecutor(new BloodCommand(this));
         getCommand("blood").setTabCompleter(new BloodTabCompleter());
 
-        // Запускаем задачу регенерации крови
+        // Запускаем обе задачи регенерации
         startRegenerationTask();
+        startHealthRegenerationTask();
 
         // Регистрируем слушатели событий
         getServer().getPluginManager().registerEvents(this, this);
@@ -77,8 +82,13 @@ public final class BloodSystem extends JavaPlugin implements Listener {
 
         getLogger().info("BloodSystem выключен!");
 
-        // Останавливаем задачу регенерации
-        Bukkit.getScheduler().cancelTask(regenerationTask);
+        // Отменяем задачи при выключении плагина
+        if (regenerationTask != 0) {
+            Bukkit.getScheduler().cancelTask(regenerationTask);
+        }
+        if (healthRegenerationTask != 0) {
+            Bukkit.getScheduler().cancelTask(healthRegenerationTask);
+        }
     }
 
     @EventHandler
@@ -88,15 +98,24 @@ public final class BloodSystem extends JavaPlugin implements Listener {
         Player player = (Player) event.getEntity();
         PlayerBloodData bloodData = getPlayerBloodData(player.getUniqueId());
 
-        // Вычисляем потерю крови (100 мл за 1 урон)
         double bloodLoss = event.getFinalDamage() * getConfig().getDouble("settings.blood.blood-loss-per-damage", 100);
-        bloodData.removeVolume(bloodLoss);
-
-        // Обновляем здоровье
-        bloodData.updatePlayerHealth(player);
+        
+        double currentHealth = player.getHealth();
+        double finalDamage = event.getFinalDamage();
+        
+        if (currentHealth - finalDamage <= 0) {
+            return;
+        } else {
+            bloodData.removeVolume(bloodLoss);
+            
+            Bukkit.getScheduler().runTaskLater(this, () -> {
+                if (player.isOnline() && !player.isDead()) {
+                    bloodData.updatePlayerHealth(player);
+                }
+            }, 1L);
+        }
     }
 
-    // Обновим метод в BloodCommand для команды set volume
     public void setBloodVolume(Player target, double volume) {
         PlayerBloodData bloodData = getPlayerBloodData(target.getUniqueId());
         bloodData.setVolume(volume);
@@ -108,11 +127,9 @@ public final class BloodSystem extends JavaPlugin implements Listener {
         Player player = event.getPlayer();
         UUID uuid = player.getUniqueId();
 
-        // Проверяем, есть ли уже данные об игроке
         if (!playerBloodMap.containsKey(uuid)) {
             PlayerBloodData bloodData = dataManager.loadPlayerData(uuid);
 
-            // Если данных нет в файле, создаем новые
             if (bloodData == null) {
                 bloodData = new PlayerBloodData(uuid, true, this);
                 dataManager.savePlayerData(bloodData);
@@ -121,9 +138,10 @@ public final class BloodSystem extends JavaPlugin implements Listener {
             playerBloodMap.put(uuid, bloodData);
         }
 
-        // Обновляем здоровье
         PlayerBloodData bloodData = playerBloodMap.get(uuid);
-        bloodData.updatePlayerHealth(player);
+        Bukkit.getScheduler().runTaskLater(this, () -> {
+            bloodData.updatePlayerHealth(player);
+        }, 1L);
     }
 
     @EventHandler
@@ -131,7 +149,6 @@ public final class BloodSystem extends JavaPlugin implements Listener {
         Player player = event.getPlayer();
         UUID playerUUID = player.getUniqueId();
 
-        // Сохраняем данные при выходе игрока
         PlayerBloodData bloodData = playerBloodMap.get(playerUUID);
         if (bloodData != null) {
             dataManager.savePlayerData(bloodData);
@@ -142,17 +159,12 @@ public final class BloodSystem extends JavaPlugin implements Listener {
     public void reloadPlugin() {
         ConsoleCommandSender console = Bukkit.getConsoleSender();
 
-        // Сохраняем все данные
         for (PlayerBloodData bloodData : playerBloodMap.values()) {
             dataManager.savePlayerData(bloodData);
         }
-        // Очищаем карту данных
         playerBloodMap.clear();
-        // Перезагружаем конфиг
         reloadConfig();
-        // Перезагружаем языковые файлы
         loadLanguage();
-        // Перезагружаем данные всех онлайн игроков
         for (Player player : Bukkit.getOnlinePlayers()) {
             UUID uuid = player.getUniqueId();
             PlayerBloodData bloodData = dataManager.loadPlayerData(uuid);
@@ -162,9 +174,8 @@ public final class BloodSystem extends JavaPlugin implements Listener {
             playerBloodMap.put(uuid, bloodData);
             bloodData.updatePlayerHealth(player);
         }
-        // Перезапускаем задачу регенерации
         startRegenerationTask();
-        // Перерегистрируем плейсхолдеры
+        startHealthRegenerationTask();
         if (Bukkit.getPluginManager().getPlugin("PlaceholderAPI") != null) {
             new BloodPlaceholders(this).register();
         }
@@ -221,34 +232,95 @@ public final class BloodSystem extends JavaPlugin implements Listener {
     }
 
     @EventHandler
+    public void onPlayerDeath(PlayerDeathEvent event) {
+        Player player = event.getEntity();
+        PlayerBloodData bloodData = getPlayerBloodData(player.getUniqueId());
+        
+        if (bloodData != null) {
+            double respawnBloodVolume = getConfig().getDouble("settings.blood.death-blood-loss", 500.0);
+            bloodData.setVolume(respawnBloodVolume);
+            
+            dataManager.savePlayerData(bloodData);
+        }
+    }
+
+    @EventHandler
+    public void onPlayerRespawn(PlayerRespawnEvent event) {
+        Player player = event.getPlayer();
+        
+        Bukkit.getScheduler().runTaskLater(this, () -> {
+            PlayerBloodData bloodData = getPlayerBloodData(player.getUniqueId());
+            if (bloodData != null && player.isOnline()) {
+                bloodData.updatePlayerHealth(player);
+                
+                dataManager.savePlayerData(bloodData);
+            }
+        }, 5L);
+    }
+
+    @EventHandler(priority = EventPriority.HIGH)
     public void onPlayerRegainHealth(EntityRegainHealthEvent event) {
         if (!(event.getEntity() instanceof Player)) return;
-        if (event.getRegainReason() == EntityRegainHealthEvent.RegainReason.SATIATED) {
-            // Отменяем восстановление от сытости
-            event.setCancelled(true);
+        
+        Player player = (Player) event.getEntity();
+        PlayerBloodData bloodData = getPlayerBloodData(player.getUniqueId());
+        
+        if (bloodData == null) return;
+        
+        // Получаем максимально возможное здоровье на основе объема крови
+        double maxAllowedHealth = Math.min((bloodData.getVolume() / 500.0) * 2.0, 20.0);
+        
+        // Если игрок пытается восстановить больше максимально допустимого
+        if (player.getHealth() + event.getAmount() > maxAllowedHealth) {
+            double allowedAmount = maxAllowedHealth - player.getHealth();
+            if (allowedAmount <= 0) {
+                event.setCancelled(true);
+            } else {
+                event.setAmount(allowedAmount);
+            }
         }
     }
 
     private void startRegenerationTask() {
-        // Останавливаем существующую задачу, если она есть
         if (regenerationTask != 0) {
             Bukkit.getScheduler().cancelTask(regenerationTask);
         }
 
-        // Получаем значение регенерации из конфига (мл/секунду)
         double regenPerMinute = getConfig().getDouble("settings.blood.regeneration-rate", 300);
-        // Конвертируем в регенерацию в секунду
         double regenPerSecond = regenPerMinute / 60.0;
 
         regenerationTask = Bukkit.getScheduler().scheduleSyncRepeatingTask(this, () -> {
             for (Player player : Bukkit.getOnlinePlayers()) {
                 PlayerBloodData bloodData = getPlayerBloodData(player.getUniqueId());
-                if (bloodData != null) {
-                    // Теперь addVolume будет использовать индивидуальный maxVolume
+                if (bloodData != null && player.isOnline() && !player.isDead()) {
                     bloodData.addVolume(regenPerSecond);
                     bloodData.updatePlayerHealth(player);
                 }
             }
         }, 20L, 20L); //20 тиков = 1 секунда
+    }
+
+    private void startHealthRegenerationTask() {
+        if (healthRegenerationTask != 0) {
+            Bukkit.getScheduler().cancelTask(healthRegenerationTask);
+        }
+
+        healthRegenerationTask = Bukkit.getScheduler().runTaskTimer(this, () -> {
+            for (Player player : Bukkit.getOnlinePlayers()) {
+                PlayerBloodData bloodData = getPlayerBloodData(player.getUniqueId());
+                if (bloodData == null || player.isDead()) continue;
+
+                if (player.getHealth() < player.getMaxHealth()) {
+                    double currentHealth = player.getHealth();
+                    double maxHealth = player.getMaxHealth();
+                    
+                    double healAmount = 1.0;
+                    
+                    if (currentHealth + healAmount <= maxHealth) {
+                        player.setHealth(currentHealth + healAmount);
+                    }
+                }
+            }
+        }, 20L, 20L).getTaskId(); // 20 тиков = 1 секунда
     }
 }

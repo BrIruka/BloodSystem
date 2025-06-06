@@ -17,45 +17,50 @@ public class BloodCommand implements CommandExecutor {
 
     @Override
     public boolean onCommand(CommandSender sender, Command command, String label, String[] args) {
-        if (!(sender instanceof Player)) {
-            sender.sendMessage(plugin.getMessage("messages.errors.player-only"));
-            return true;
-        }
-
-        Player player = (Player) sender;
-
-        // Базовая команда /blood
         if (args.length == 0) {
+            if (!(sender instanceof Player)) {
+                sender.sendMessage(plugin.getMessage("messages.errors.player-only"));
+                return true;
+            }
+            Player player = (Player) sender;
             showBloodInfo(player, player);
             return true;
         }
 
         switch (args[0].toLowerCase()) {
             case "info":
-                handleInfoCommand(player, args);
+                if (!(sender instanceof Player)) {
+                    sender.sendMessage(plugin.getMessage("messages.errors.player-only"));
+                    return true;
+                }
+                handleInfoCommand((Player) sender, args);
                 break;
             case "help":
-                showHelp(player);
+                if (!(sender instanceof Player)) {
+                    sender.sendMessage(plugin.getMessage("messages.errors.player-only"));
+                    return true;
+                }
+                showHelp((Player) sender);
                 break;
             case "set":
-                if (player.hasPermission("bloodsystem.admin")) {
-                    handleSetCommand(player, args);
+                if (sender.hasPermission("bloodsystem.admin")) {
+                    handleSetCommand(sender, args);
                 } else {
-                    player.sendMessage(plugin.getMessage("messages.errors.no-permission"));
+                    sender.sendMessage(plugin.getMessage("messages.errors.no-permission"));
                 }
                 break;
             case "add":
-                if (player.hasPermission("bloodsystem.admin")) {
-                    handleAddCommand(player, args);
+                if (sender.hasPermission("bloodsystem.admin")) {
+                    handleAddCommand(sender, args);
                 } else {
-                    player.sendMessage(plugin.getMessage("messages.errors.no-permission"));
+                    sender.sendMessage(plugin.getMessage("messages.errors.no-permission"));
                 }
                 break;
             case "remove":
-                if (player.hasPermission("bloodsystem.admin")) {
-                    handleRemoveCommand(player, args);
+                if (sender.hasPermission("bloodsystem.admin")) {
+                    handleRemoveCommand(sender, args);
                 } else {
-                    player.sendMessage(plugin.getMessage("messages.errors.no-permission"));
+                    sender.sendMessage(plugin.getMessage("messages.errors.no-permission"));
                 }
                 break;
             case "reload":
@@ -68,182 +73,213 @@ public class BloodCommand implements CommandExecutor {
                 }
                 break;
             default:
-                player.sendMessage(plugin.getMessage("messages.errors.invalid-command"));
+                sender.sendMessage(plugin.getMessage("messages.errors.invalid-command"));
         }
 
         return true;
     }
 
-    private void handleAddCommand(Player player, String[] args) {
+    private void handleAddCommand(CommandSender sender, String[] args) {
         if (args.length < 4) {
-            player.sendMessage(plugin.getMessage("messages.errors.invalid-command"));
+            sender.sendMessage(plugin.getMessage("messages.errors.invalid-command"));
             return;
         }
 
         Player target = Bukkit.getPlayer(args[2]);
         if (target == null) {
-            player.sendMessage(plugin.getMessage("messages.errors.player-not-found"));
+            sender.sendMessage(plugin.getMessage("messages.errors.player-not-found"));
             return;
         }
 
         PlayerBloodData bloodData = plugin.getPlayerBloodData(target.getUniqueId());
         if (bloodData == null) {
-            player.sendMessage(plugin.getMessage("messages.errors.no-data"));
+            sender.sendMessage(plugin.getMessage("messages.errors.no-data"));
             return;
         }
 
-        if (args[1].equalsIgnoreCase("volume")) {
-            try {
-                double amount = Double.parseDouble(args[3]);
-                // Увеличиваем максимальный объем крови
-                bloodData.addMaxVolume(amount);
-                
-                // Обновляем здоровье и сохраняем изменения
-                bloodData.updatePlayerHealth(target);
-                plugin.getDataManager().savePlayerData(bloodData);
+        switch (args[1].toLowerCase()) {
+            case "volume":
+                try {
+                    double amount = Double.parseDouble(args[3]);
+                    double oldVolume = bloodData.getVolume();
+                    
+                    bloodData.addVolume(amount);
+                    
+                    bloodData.updatePlayerHealth(target);
+                    plugin.getDataManager().savePlayerData(bloodData);
 
-                player.sendMessage(plugin.getMessage("messages.blood.add.maxvolume")
-                        .replace("%player%", target.getName())
-                        .replace("%amount%", String.format("%.1f", amount))
-                        .replace("%maxvolume%", String.format("%.1f", bloodData.getMaxVolume())));
-            } catch (NumberFormatException e) {
-                player.sendMessage(plugin.getMessage("messages.errors.invalid_value"));
-            }
-        } else {
-            player.sendMessage(plugin.getMessage("messages.errors.invalid-command"));
+                    sender.sendMessage(plugin.getMessage("messages.blood.add.volume")
+                            .replace("%player%", target.getName())
+                            .replace("%amount%", String.format("%.1f", amount))
+                            .replace("%oldvolume%", String.format("%.1f", oldVolume))
+                            .replace("%volume%", String.format("%.1f", bloodData.getVolume())));
+                } catch (NumberFormatException e) {
+                    sender.sendMessage(plugin.getMessage("messages.errors.invalid_value"));
+                }
+                break;
+            case "maxvolume":
+                try {
+                    double amount = Double.parseDouble(args[3]);
+                    bloodData.addMaxVolume(amount);
+                    
+                    bloodData.updatePlayerHealth(target);
+                    plugin.getDataManager().savePlayerData(bloodData);
+
+                    sender.sendMessage(plugin.getMessage("messages.blood.add.maxvolume")
+                            .replace("%player%", target.getName())
+                            .replace("%amount%", String.format("%.1f", amount))
+                            .replace("%maxvolume%", String.format("%.1f", bloodData.getMaxVolume())));
+                } catch (NumberFormatException e) {
+                    sender.sendMessage(plugin.getMessage("messages.errors.invalid_value"));
+                }
+                break;
+            default:
+                sender.sendMessage(plugin.getMessage("messages.errors.invalid-command"));
         }
     }
 
-    private void handleRemoveCommand(Player player, String[] args) {
+    private void handleRemoveCommand(CommandSender sender, String[] args) {
         if (args.length < 4) {
-            player.sendMessage(plugin.getMessage("messages.errors.invalid-command"));
+            sender.sendMessage(plugin.getMessage("messages.errors.invalid-command"));
             return;
         }
 
         Player target = Bukkit.getPlayer(args[2]);
         if (target == null) {
-            player.sendMessage(plugin.getMessage("messages.errors.player-not-found"));
+            sender.sendMessage(plugin.getMessage("messages.errors.player-not-found"));
             return;
         }
 
         PlayerBloodData bloodData = plugin.getPlayerBloodData(target.getUniqueId());
         if (bloodData == null) {
-            player.sendMessage(plugin.getMessage("messages.errors.no-data"));
+            sender.sendMessage(plugin.getMessage("messages.errors.no-data"));
             return;
         }
 
-        if (args[1].equalsIgnoreCase("volume")) {
-            try {
-                double amount = Double.parseDouble(args[3]);
-                double oldMaxVolume = bloodData.getMaxVolume();
-                
-                // Рассчитываем минимальный допустимый объем крови (для 1 сердца)
-                double minRequiredVolume = 500.0; // BLOOD_PER_HEART равен 500.0
-                
-                // Проверяем, не станет ли объем крови меньше минимально допустимого значения
-                if (oldMaxVolume - amount < minRequiredVolume) {
-                    player.sendMessage(plugin.getMessage("messages.blood_limits.min_required")
-                            .replace("%minvolume%", String.valueOf(minRequiredVolume)));
-                    player.sendMessage(plugin.getMessage("messages.blood_limits.max_remove")
-                            .replace("%maxamount%", String.format("%.1f", oldMaxVolume - minRequiredVolume)));
-                    return;
-                }
-                
-                // Уменьшаем максимальный объем крови
-                bloodData.removeMaxVolume(amount);
-                
-                // Если объем крови больше нового максимума, уменьшаем его
-                if (bloodData.getVolume() > bloodData.getMaxVolume()) {
-                    bloodData.setVolume(bloodData.getMaxVolume());
-                }
-                
-                // Обновляем здоровье и сохраняем изменения
-                bloodData.updatePlayerHealth(target);
-                plugin.getDataManager().savePlayerData(bloodData);
+        switch (args[1].toLowerCase()) {
+            case "volume":
+                try {
+                    double amount = Double.parseDouble(args[3]);
+                    double oldVolume = bloodData.getVolume();
+                    
+                    bloodData.removeVolume(amount);
+                    
+                    bloodData.updatePlayerHealth(target);
+                    plugin.getDataManager().savePlayerData(bloodData);
 
-                player.sendMessage(plugin.getMessage("messages.blood.remove.maxvolume")
-                        .replace("%player%", target.getName())
-                        .replace("%amount%", String.format("%.1f", amount))
-                        .replace("%oldmaxvolume%", String.format("%.1f", oldMaxVolume))
-                        .replace("%maxvolume%", String.format("%.1f", bloodData.getMaxVolume())));
-            } catch (NumberFormatException e) {
-                player.sendMessage(plugin.getMessage("messages.errors.invalid_value"));
-            }
-        } else {
-            player.sendMessage(plugin.getMessage("messages.errors.invalid-command"));
+                    sender.sendMessage(plugin.getMessage("messages.blood.remove.volume")
+                            .replace("%player%", target.getName())
+                            .replace("%amount%", String.format("%.1f", amount))
+                            .replace("%oldvolume%", String.format("%.1f", oldVolume))
+                            .replace("%volume%", String.format("%.1f", bloodData.getVolume())));
+                } catch (NumberFormatException e) {
+                    sender.sendMessage(plugin.getMessage("messages.errors.invalid_value"));
+                }
+                break;
+            case "maxvolume":
+                try {
+                    double amount = Double.parseDouble(args[3]);
+                    double oldMaxVolume = bloodData.getMaxVolume();
+                    
+                    double minRequiredVolume = 500.0; // BLOOD_PER_HEART равен 500.0
+                    
+                    if (oldMaxVolume - amount < minRequiredVolume) {
+                        sender.sendMessage(plugin.getMessage("messages.blood_limits.min_required")
+                                .replace("%minvolume%", String.valueOf(minRequiredVolume)));
+                        sender.sendMessage(plugin.getMessage("messages.blood_limits.max_remove")
+                                .replace("%maxamount%", String.format("%.1f", oldMaxVolume - minRequiredVolume)));
+                        return;
+                    }
+                    
+                    bloodData.removeMaxVolume(amount);
+                    
+                    if (bloodData.getVolume() > bloodData.getMaxVolume()) {
+                        bloodData.setVolume(bloodData.getMaxVolume());
+                    }
+                    
+                    bloodData.updatePlayerHealth(target);
+                    plugin.getDataManager().savePlayerData(bloodData);
+
+                    sender.sendMessage(plugin.getMessage("messages.blood.remove.maxvolume")
+                            .replace("%player%", target.getName())
+                            .replace("%amount%", String.format("%.1f", amount))
+                            .replace("%oldmaxvolume%", String.format("%.1f", oldMaxVolume))
+                            .replace("%maxvolume%", String.format("%.1f", bloodData.getMaxVolume())));
+                } catch (NumberFormatException e) {
+                    sender.sendMessage(plugin.getMessage("messages.errors.invalid_value"));
+                }
+                break;
+            default:
+                sender.sendMessage(plugin.getMessage("messages.errors.invalid-command"));
         }
     }
 
-    private void handleSetCommand(Player player, String[] args) {
+    private void handleSetCommand(CommandSender sender, String[] args) {
         if (args.length < 4) {
-            player.sendMessage(plugin.getMessage("messages.errors.invalid-command"));
+            sender.sendMessage(plugin.getMessage("messages.errors.invalid-command"));
             return;
         }
 
         Player target = Bukkit.getPlayer(args[2]);
         if (target == null) {
-            player.sendMessage(plugin.getMessage("messages.errors.player-not-found"));
+            sender.sendMessage(plugin.getMessage("messages.errors.player-not-found"));
             return;
         }
 
         PlayerBloodData bloodData = plugin.getPlayerBloodData(target.getUniqueId());
         if (bloodData == null) {
-            player.sendMessage(plugin.getMessage("messages.errors.no-data"));
+            sender.sendMessage(plugin.getMessage("messages.errors.no-data"));
             return;
         }
 
         switch (args[1].toLowerCase()) {
             case "type":
-                handleSetType(player, target, bloodData, args);
+                handleSetType(sender, target, bloodData, args);
                 break;
             case "volume":
-                handleSetVolume(player, target, bloodData, args);
+                handleSetVolume(sender, target, bloodData, args);
                 break;
             case "maxvolume":
-                handleSetMaxVolume(player, target, bloodData, args);
+                handleSetMaxVolume(sender, target, bloodData, args);
                 break;
             case "quality":
-                handleSetQuality(player, target, bloodData, args);
+                handleSetQuality(sender, target, bloodData, args);
                 break;
             default:
-                player.sendMessage(plugin.getMessage("messages.errors.invalid-command"));
+                sender.sendMessage(plugin.getMessage("messages.errors.invalid-command"));
         }
     }
 
-    private void handleSetMaxVolume(Player player, Player target, PlayerBloodData bloodData, String[] args) {
+    private void handleSetMaxVolume(CommandSender sender, Player target, PlayerBloodData bloodData, String[] args) {
         try {
             double maxVolume = Double.parseDouble(args[3]);
             
-            // Рассчитываем минимальный допустимый объем крови (для 1 сердца)
             double minRequiredVolume = 500.0; // BLOOD_PER_HEART равен 500.0
             
-            // Проверяем, не станет ли объем крови меньше минимально допустимого значения
             if (maxVolume < minRequiredVolume) {
-                player.sendMessage(plugin.getMessage("messages.blood_limits.min_required")
+                sender.sendMessage(plugin.getMessage("messages.blood_limits.min_required")
                         .replace("%minvolume%", String.valueOf(minRequiredVolume)));
                 return;
             }
             
             bloodData.setMaxVolume(maxVolume);
             
-            // Если текущий объем больше нового максимума, уменьшаем его
             if (bloodData.getVolume() > maxVolume) {
                 bloodData.setVolume(maxVolume);
             }
             
-            // Обновляем здоровье и сохраняем изменения
             bloodData.updatePlayerHealth(target);
             plugin.getDataManager().savePlayerData(bloodData);
 
-            player.sendMessage(plugin.getMessage("messages.blood.set.maxvolume")
+            sender.sendMessage(plugin.getMessage("messages.blood.set.maxvolume")
                     .replace("%player%", target.getName())
                     .replace("%maxvolume%", String.format("%.1f", maxVolume)));
         } catch (NumberFormatException e) {
-            player.sendMessage(plugin.getMessage("messages.errors.invalid_value"));
+            sender.sendMessage(plugin.getMessage("messages.errors.invalid_value"));
         }
     }
 
-    private void handleSetType(Player player, Player target, PlayerBloodData bloodData, String[] args) {
+    private void handleSetType(CommandSender sender, Player target, PlayerBloodData bloodData, String[] args) {
         try {
             PlayerBloodData.BloodType type = PlayerBloodData.BloodType.valueOf(args[3].toUpperCase());
             boolean rhFactor = args.length > 4 ? args[4].equals("+") : true;
@@ -251,48 +287,45 @@ public class BloodCommand implements CommandExecutor {
             bloodData.setBloodType(type);
             bloodData.setRhFactor(rhFactor);
 
-            // Сохраняем изменения
             plugin.getDataManager().savePlayerData(bloodData);
 
-            player.sendMessage(plugin.getMessage("messages.blood.set.type")
+            sender.sendMessage(plugin.getMessage("messages.blood.set.type")
                     .replace("%player%", target.getName())
                     .replace("%bloodtype%", type.name())
                     .replace("%rhfactor%", rhFactor ? "+" : "-"));
         } catch (IllegalArgumentException e) {
-            player.sendMessage(plugin.getMessage("messages.errors.invalid_type"));
+            sender.sendMessage(plugin.getMessage("messages.errors.invalid_type"));
         }
     }
 
-    private void handleSetVolume(Player player, Player target, PlayerBloodData bloodData, String[] args) {
+    private void handleSetVolume(CommandSender sender, Player target, PlayerBloodData bloodData, String[] args) {
         try {
             double volume = Double.parseDouble(args[3]);
             bloodData.setVolume(volume);
 
-            // Обновляем здоровье и сохраняем изменения
             bloodData.updatePlayerHealth(target);
             plugin.getDataManager().savePlayerData(bloodData);
 
-            player.sendMessage(plugin.getMessage("messages.blood.set.volume")
+            sender.sendMessage(plugin.getMessage("messages.blood.set.volume")
                     .replace("%player%", target.getName())
                     .replace("%volume%", String.format("%.1f", volume)));
         } catch (NumberFormatException e) {
-            player.sendMessage(plugin.getMessage("messages.errors.invalid_value"));
+            sender.sendMessage(plugin.getMessage("messages.errors.invalid_value"));
         }
     }
 
-    private void handleSetQuality(Player player, Player target, PlayerBloodData bloodData, String[] args) {
+    private void handleSetQuality(CommandSender sender, Player target, PlayerBloodData bloodData, String[] args) {
         try {
             double quality = Double.parseDouble(args[3]);
             bloodData.setQuality(quality);
 
-            // Сохраняем изменения
             plugin.getDataManager().savePlayerData(bloodData);
 
-            player.sendMessage(plugin.getMessage("messages.blood.set.quality")
+            sender.sendMessage(plugin.getMessage("messages.blood.set.quality")
                     .replace("%player%", target.getName())
                     .replace("%quality%", String.format("%.1f", quality)));
         } catch (NumberFormatException e) {
-            player.sendMessage(plugin.getMessage("messages.errors.invalid_value"));
+            sender.sendMessage(plugin.getMessage("messages.errors.invalid_value"));
         }
     }
 
@@ -309,7 +342,9 @@ public class BloodCommand implements CommandExecutor {
             player.sendMessage(plugin.getMessage("messages.help.commands.admin.set_volume"));
             player.sendMessage(plugin.getMessage("messages.help.commands.admin.set_quality"));
             player.sendMessage(plugin.getMessage("messages.help.commands.admin.set_maxvolume"));
+            player.sendMessage(plugin.getMessage("messages.help.commands.admin.add_volume"));
             player.sendMessage(plugin.getMessage("messages.help.commands.admin.add_maxvolume"));
+            player.sendMessage(plugin.getMessage("messages.help.commands.admin.remove_volume"));
             player.sendMessage(plugin.getMessage("messages.help.commands.admin.remove_maxvolume"));
         }
 
@@ -320,7 +355,6 @@ public class BloodCommand implements CommandExecutor {
 
     private void handleInfoCommand(Player player, String[] args) {
         if (args.length > 1) {
-            // Проверка прав на просмотр информации других игроков
             if (!player.hasPermission("bloodsystem.info.others")) {
                 player.sendMessage(plugin.getMessage("messages.errors.no-permission"));
                 return;
@@ -342,7 +376,6 @@ public class BloodCommand implements CommandExecutor {
 
         String prefix = plugin.getMessage("messages.prefix") + " ";
 
-        // Отправляем информацию о крови
         sender.sendMessage(prefix + plugin.getMessage("messages.blood.info")
                 .replace("%bloodtype%", bloodData.getBloodType().name())
                 .replace("%rhfactor%", bloodData.getRhFactor()));

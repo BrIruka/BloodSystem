@@ -10,8 +10,10 @@ messages:
       quality: "&aЯкість крові гравця %player% змінена на &c%quality%&a%"
       maxvolume: "&aМаксимальний об'єм крові гравця %player% встановлено на &c%maxvolume% мл"
     add:
+      volume: "&aОб'єм крові гравця %player% збільшено на &c%amount% мл &7(Було: &c%oldvolume% мл&7, Стало: &c%volume% мл&7)"
       maxvolume: "&aМаксимальний об'єм крові гравця %player% збільшено на &c%amount% мл &7(Тепер: &c%maxvolume% мл&7)"
     remove:
+      volume: "&aОб'єм крові гравця %player% зменшено на &c%amount% мл &7(Було: &c%oldvolume% мл&7, Стало: &c%volume% мл&7)"
       maxvolume: "&aМаксимальний об'єм крові гравця %player% зменшено на &c%amount% мл &7(Було: &c%oldmaxvolume% мл&7, Стало: &c%maxvolume% мл&7)"
   help:
     title: "&fДоступні команди:"
@@ -25,8 +27,10 @@ messages:
         set_volume: "&f/blood set volume <гравець> <значення> &7- Встановити об'єм крові"
         set_quality: "&f/blood set quality <гравець> <значення> &7- Встановити якість крові"
         set_maxvolume: "&f/blood set maxvolume <гравець> <значення> &7- Встановити максимальний об'єм крові"
-        add_maxvolume: "&f/blood add volume <гравець> <значення> &7- Збільшити максимальний об'єм крові"
-        remove_maxvolume: "&f/blood remove volume <гравець> <значення> &7- Зменшити максимальний об'єм крові"
+        add_volume: "&f/blood add volume <гравець> <значення> &7- Додати об'єм крові"
+        add_maxvolume: "&f/blood add maxvolume <гравець> <значення> &7- Збільшити максимальний об'єм крові"
+        remove_volume: "&f/blood remove volume <гравець> <значення> &7- Забрати об'єм крові"
+        remove_maxvolume: "&f/blood remove maxvolume <гравець> <значення> &7- Зменшити максимальний об'єм крові"
         reload: "&f/blood reload &7- Перезавантажити плагін"
   blood_limits:
     min_required: "&cНеможливо встановити об'єм крові менше %minvolume% мл (необхідно для 1 серця)"
